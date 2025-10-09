@@ -20,11 +20,10 @@ class TimeTextModel(): ViewModel() {
     fun calcAsync() {
 
         viewModelScope.launch {
-        //runBlocking {
             timeTextState.value = "ASync calc..."
 
             val (_, duration) = measureTimedValue { async { doAsync() }.await() }
-            timeTextState.value = duration.toString()
+            timeTextState.value = "ASync calc: $duration"
         }
     }
 
@@ -39,6 +38,7 @@ class TimeTextModel(): ViewModel() {
     private fun calculate() {
 
         val n = 50_000_000
+        //val n = 5_000_000
         //val n = 5_000
         val array: Array<Int> = Array(n + 1) { 1 }
         array[0] = 0
