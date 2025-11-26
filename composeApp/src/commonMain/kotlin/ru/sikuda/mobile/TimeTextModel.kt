@@ -6,7 +6,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.time.measureTime
 import kotlin.time.measureTimedValue
@@ -15,15 +14,21 @@ import kotlin.time.measureTimedValue
 class TimeTextModel(): ViewModel() {
     private val timeTextState = MutableStateFlow("")
     val timeText: StateFlow<String> = timeTextState
-
+    var fReadyWorking = true //working only once
 
     fun calcAsync() {
 
-        viewModelScope.launch {
+        if (!fReadyWorking) return
+
+        viewModelScope.async {
+            fReadyWorking = false
             timeTextState.value = "ASync calc..."
 
-            val (_, duration) = measureTimedValue { async { doAsync() }.await() }
+            val (_, duration) = measureTimedValue {
+                async { doAsync() }.await()
+            }
             timeTextState.value = "ASync calc: $duration"
+            fReadyWorking = true
         }
     }
 
@@ -32,7 +37,7 @@ class TimeTextModel(): ViewModel() {
         val interval = measureTime {
             calculate()
         }
-        timeTextState.value = "Sync calc: " + (interval).toString()
+        timeTextState.value = "Sync calc: $interval"
     }
 
     private fun calculate() {
