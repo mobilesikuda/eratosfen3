@@ -25,7 +25,7 @@ class TimeTextModel(): ViewModel() {
             timeTextState.value = "ASync calc..."
 
             val (_, duration) = measureTimedValue {
-                async { doAsync() }.await()
+                calculateAsync()
             }
             timeTextState.value = "ASync calc: $duration"
             fReadyWorking = true
@@ -65,7 +65,7 @@ class TimeTextModel(): ViewModel() {
         }
     }
 
-    suspend fun doAsync() {
+    suspend fun calculateAsync() {
         withContext(Dispatchers.Default) {
             calculate()
             //delay(1000L) // pretend we are doing something useful here
