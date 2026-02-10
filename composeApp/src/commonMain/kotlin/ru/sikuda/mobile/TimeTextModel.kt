@@ -3,15 +3,15 @@ package ru.sikuda.mobile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.time.measureTime
 import kotlin.time.measureTimedValue
 
 
-class TimeTextModel(): ViewModel() {
+class TimeTextModel: ViewModel() {
     private val timeTextState = MutableStateFlow("")
     val timeText: StateFlow<String> = timeTextState
     var fReadyWorking = true //working only once
@@ -20,7 +20,7 @@ class TimeTextModel(): ViewModel() {
 
         if (!fReadyWorking) return
 
-        viewModelScope.async {
+        viewModelScope.launch {
             fReadyWorking = false
             timeTextState.value = "ASync calc..."
 
